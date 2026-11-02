@@ -4,19 +4,19 @@ import { VOCAB } from "@/data/vocab";
 
 const FEATURES = [
   {
-    href: "/flashcards/",
+    href: "/flashcards",
     title: "Flashcards",
     ja: "単語",
     body: `${VOCAB.length} vocabulary cards scheduled with spaced repetition, so you review each word right before you'd forget it.`,
   },
   {
-    href: "/grammar/",
+    href: "/grammar",
     title: "Grammar",
     ja: "文法",
     body: `${GRAMMAR.length} grammar points by JLPT level, each with its formation and example sentences.`,
   },
   {
-    href: "/quiz/",
+    href: "/quiz",
     title: "Quiz",
     ja: "試験",
     body: "Quick 10-question multiple-choice rounds to check what you know.",

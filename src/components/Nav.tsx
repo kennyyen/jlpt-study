@@ -4,9 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const LINKS = [
-  { href: "/flashcards/", label: "Flashcards" },
-  { href: "/grammar/", label: "Grammar" },
-  { href: "/quiz/", label: "Quiz" },
+  { href: "/flashcards", label: "Flashcards" },
+  { href: "/grammar", label: "Grammar" },
+  { href: "/quiz", label: "Quiz" },
 ];
 
 export function Nav() {
@@ -19,7 +19,7 @@ export function Nav() {
           <span className="hidden sm:inline"> JLPT Study</span>
         </Link>
         {LINKS.map(({ href, label }) => {
-          const active = pathname === href || pathname === href.slice(0, -1);
+          const active = pathname === href;
           return (
             <Link
               key={href}
