@@ -7,7 +7,7 @@ A web app to practice Japanese for JLPT exams — flashcards, grammar reference,
 - **Grammar** — browse and search grammar points by JLPT level, with formation and examples
 - **Quiz** — 10-question multiple-choice vocabulary rounds
 
-Content currently covers N5 and N4; N3–N1 are planned. Progress is stored in the browser's `localStorage`, so there's no account or backend.
+Content currently covers N5 through N2; N1 is planned. Progress is stored in the browser's `localStorage`, so there's no account or backend.
 
 ## Stack
 - Next.js (App Router) + TypeScript

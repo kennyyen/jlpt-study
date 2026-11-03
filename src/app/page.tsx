@@ -29,7 +29,7 @@ export default function Home() {
       <section className="space-y-2">
         <h1 className="text-3xl font-bold">Study for the JLPT</h1>
         <p className="text-muted">
-          Practice vocabulary and grammar from N5 upward. N5 and N4 are available now; N3–N1 are on the way.
+          Practice vocabulary and grammar from N5 upward. N5 through N2 are available now; N1 is on the way.
         </p>
       </section>
       <section className="grid gap-4 sm:grid-cols-3">
