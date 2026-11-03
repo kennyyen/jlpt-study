@@ -21,6 +21,12 @@ const FEATURES = [
     ja: "試験",
     body: "Quick 10-question multiple-choice rounds to check what you know.",
   },
+  {
+    href: "/exam",
+    title: "Exam Practice",
+    ja: "模試",
+    body: "JLPT-style questions for N3 and N2: practice each question type, or take a timed mock exam.",
+  },
 ];
 
 export default function Home() {
@@ -32,7 +38,7 @@ export default function Home() {
           Practice vocabulary and grammar from N5 upward. N5 through N2 are available now; N1 is on the way.
         </p>
       </section>
-      <section className="grid gap-4 sm:grid-cols-3">
+      <section className="grid gap-4 sm:grid-cols-2">
         {FEATURES.map((f) => (
           <Link
             key={f.href}
