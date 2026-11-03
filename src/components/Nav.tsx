@@ -7,6 +7,7 @@ const LINKS = [
   { href: "/flashcards", label: "Flashcards" },
   { href: "/grammar", label: "Grammar" },
   { href: "/quiz", label: "Quiz" },
+  { href: "/exam", label: "Exam" },
 ];
 
 export function Nav() {
@@ -14,7 +15,7 @@ export function Nav() {
   return (
     <header className="border-b border-border bg-surface">
       <nav className="mx-auto flex max-w-3xl items-center gap-1 px-4 py-3">
-        <Link href="/" className="mr-auto text-lg font-bold">
+        <Link href="/" className="mr-auto whitespace-nowrap text-lg font-bold">
           <span className="text-accent">日本語</span>
           <span className="hidden sm:inline"> JLPT Study</span>
         </Link>
@@ -24,7 +25,7 @@ export function Nav() {
             <Link
               key={href}
               href={href}
-              className={`rounded-md px-3 py-1.5 text-sm ${
+              className={`rounded-md px-2 py-1.5 text-sm sm:px-3 ${
                 active ? "bg-accent text-white" : "text-muted hover:text-foreground"
               }`}
             >
