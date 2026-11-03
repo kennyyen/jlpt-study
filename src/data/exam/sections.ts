@@ -83,18 +83,19 @@ export const TYPE_INFO = Object.fromEntries(QUESTION_TYPES.map((t) => [t.type, t
 
 type Options = ExamQuestion["options"];
 
-/** Helpers that keep the question files compact. */
+/**
+ * Helpers that keep the question files compact. Every question has a fixed id
+ * (e.g. "N3-012") that saved progress refers to, so never reuse or renumber
+ * ids; give new questions the next unused number.
+ */
 export function questions(level: Level) {
-  let n = 0;
-  const id = (type: QuestionType) => `${level}:${type}:${++n}`;
-  const q = (type: QuestionType, prompt: string, options: Options, explanation: string): ExamQuestion => ({
-    id: id(type),
-    level,
-    type,
-    prompt,
-    options,
-    explanation,
-  });
+  const q = (
+    id: string,
+    type: QuestionType,
+    prompt: string,
+    options: Options,
+    explanation: string,
+  ): ExamQuestion => ({ id, level, type, prompt, options, explanation });
 
   return {
     q,
@@ -102,10 +103,18 @@ export function questions(level: Level) {
      * A ★ sentence-building question. `pieces` are in the correct order and
      * `star` is the index of the piece that goes in the ★ slot.
      */
-    order(before: string, pieces: [string, string, string, string], star: number, after: string, explanation: string) {
+    order(
+      id: string,
+      before: string,
+      pieces: [string, string, string, string],
+      star: number,
+      after: string,
+      explanation: string,
+    ) {
       const slots = pieces.map((_, i) => (i === star ? "＿★＿" : "＿＿＿")).join(" ");
       const others = pieces.filter((_, i) => i !== star);
       return q(
+        id,
         "sentence-order",
         `${before} ${slots} ${after}`,
         [pieces[star], others[0], others[1], others[2]],
@@ -113,8 +122,11 @@ export function questions(level: Level) {
       );
     },
     /** A reading passage with one or more questions about it. */
-    passage(text: string, items: { prompt: string; options: Options; explanation: string }[]) {
-      return items.map((item) => ({ ...q("reading", item.prompt, item.options, item.explanation), passage: text }));
+    passage(text: string, items: { id: string; prompt: string; options: Options; explanation: string }[]) {
+      return items.map((item) => ({
+        ...q(item.id, "reading", item.prompt, item.options, item.explanation),
+        passage: text,
+      }));
     },
   };
 }

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { LevelPicker, useLevel } from "@/components/LevelPicker";
 import { EXAM_QUESTIONS, QUESTION_TYPES, SECTIONS, TYPE_INFO, type SectionId } from "@/data/exam";
+import { CLEAR_AFTER, compareMistakes, needsReview, recordAnswer, type ExamLog } from "@/lib/examLog";
 import { useStoredState } from "@/lib/storage";
 import type { ExamQuestion, Level, QuestionType } from "@/lib/types";
 import { QuestionView } from "./QuestionView";
@@ -16,7 +17,8 @@ interface Item {
 }
 
 interface Session {
-  mode: "practice" | "mock";
+  /** practice: one question type; review: past mistakes; mock: timed full exam. */
+  mode: "practice" | "review" | "mock";
   /** Set for practice sessions. */
   type?: QuestionType;
   items: Item[];
@@ -27,6 +29,8 @@ interface Session {
   /** Mock: epoch ms when time runs out. */
   deadline: number;
   finished: boolean;
+  /** Mock: how many times each question had been missed before this exam. */
+  missedBefore: Record<string, number>;
 }
 
 interface HistoryEntry {
@@ -38,6 +42,7 @@ interface HistoryEntry {
 }
 
 const NO_HISTORY: HistoryEntry[] = [];
+const NO_LOG: ExamLog = {};
 
 function shuffle<T>(items: T[]): T[] {
   const a = [...items];
@@ -74,10 +79,14 @@ export function Exam() {
   const [storedLevel, setLevel] = useLevel();
   const level = AVAILABLE.has(storedLevel) ? storedLevel : FALLBACK_LEVEL;
   const [history, setHistory] = useStoredState("jlpt:exam-history", NO_HISTORY);
+  const [log, setLog] = useStoredState("jlpt:exam-log", NO_LOG);
   const [session, setSession] = useState<Session | null>(null);
   const [now, setNow] = useState(0);
 
   const levelQuestions = EXAM_QUESTIONS.filter((q) => q.level === level);
+  const mistakes = levelQuestions
+    .filter((q) => needsReview(log[q.id]))
+    .sort((a, b) => compareMistakes(log[a.id], log[b.id]));
 
   function startMock() {
     // Keep the test's section order; reading passages stay grouped.
@@ -93,6 +102,20 @@ export function Exam() {
       revealed: false,
       deadline: start + seconds * 1000,
       finished: false,
+      missedBefore: Object.fromEntries(ordered.map((q) => [q.id, log[q.id]?.wrong ?? 0])),
+    });
+  }
+
+  function startReview() {
+    setSession({
+      mode: "review",
+      items: toItems(mistakes),
+      index: 0,
+      answers: {},
+      revealed: false,
+      deadline: 0,
+      finished: false,
+      missedBefore: {},
     });
   }
 
@@ -108,14 +131,23 @@ export function Exam() {
       revealed: false,
       deadline: 0,
       finished: false,
+      missedBefore: {},
     });
   }
 
   function finish() {
     if (!session || session.finished) return;
     if (session.mode === "mock") {
+      const now = Date.now();
       const result = score(session);
-      setHistory((h) => [{ level, date: Date.now(), ...result }, ...h].slice(0, 10));
+      setHistory((h) => [{ level, date: now, ...result }, ...h].slice(0, 10));
+      // Unanswered questions (e.g. when time runs out) aren't counted as mistakes.
+      setLog((l) =>
+        session.items.reduce((acc, { question }) => {
+          const picked = session.answers[question.id];
+          return picked === undefined ? acc : recordAnswer(acc, question.id, picked === question.options[0], now);
+        }, l),
+      );
     }
     setSession({ ...session, finished: true });
   }
@@ -144,6 +176,9 @@ export function Exam() {
         onLevel={(l) => setLevel(l)}
         questions={levelQuestions}
         history={history.filter((h) => h.level === level)}
+        log={log}
+        mistakes={mistakes.length}
+        onReview={startReview}
         onMock={startMock}
         onPractice={startPractice}
       />
@@ -162,10 +197,15 @@ export function Exam() {
 
   function pick(option: string) {
     if (!session || session.revealed) return;
+    const instant = session.mode !== "mock";
+    if (instant) {
+      // Practice and review answers are recorded right away; mock answers on submit.
+      setLog((l) => recordAnswer(l, item.question.id, option === item.question.options[0], Date.now()));
+    }
     setSession({
       ...session,
       answers: { ...session.answers, [item.question.id]: option },
-      revealed: session.mode === "practice",
+      revealed: instant,
     });
   }
 
@@ -179,7 +219,7 @@ export function Exam() {
       <div className="flex items-center justify-between gap-2 text-sm text-muted">
         <button
           onClick={() => {
-            if (session.mode === "practice" || confirm("Quit this exam? Your answers will be lost.")) setSession(null);
+            if (session.mode !== "mock" || confirm("Quit this exam? Your answers will be lost.")) setSession(null);
           }}
           className="hover:text-foreground"
         >
@@ -215,7 +255,7 @@ export function Exam() {
         onPick={pick}
       />
 
-      {session.mode === "practice" ? (
+      {session.mode !== "mock" ? (
         session.revealed && (
           <button
             onClick={() => (isLast ? finish() : go(index + 1))}
@@ -281,6 +321,9 @@ function Setup({
   onLevel,
   questions,
   history,
+  log,
+  mistakes,
+  onReview,
   onMock,
   onPractice,
 }: {
@@ -288,6 +331,10 @@ function Setup({
   onLevel: (level: Level) => void;
   questions: ExamQuestion[];
   history: HistoryEntry[];
+  log: ExamLog;
+  /** Number of questions at this level that still need review. */
+  mistakes: number;
+  onReview: () => void;
   onMock: () => void;
   onPractice: (type: QuestionType) => void;
 }) {
@@ -302,6 +349,30 @@ function Setup({
         </p>
       </div>
       <LevelPicker level={level} onChange={onLevel} available={AVAILABLE} />
+
+      <section className="rounded-xl border border-border bg-surface p-6">
+        <h2 className="text-lg font-semibold">Review my mistakes</h2>
+        {mistakes > 0 ? (
+          <>
+            <p className="mt-1 text-sm text-muted">
+              {mistakes} {level} question{mistakes === 1 ? "" : "s"} you got wrong, most-missed first. A question leaves
+              this list after you answer it correctly on {CLEAR_AFTER} different days in a row.
+            </p>
+            <button
+              onClick={onReview}
+              className="mt-4 rounded-lg bg-accent px-6 py-2.5 font-semibold text-white hover:opacity-90"
+            >
+              Review {mistakes} mistake{mistakes === 1 ? "" : "s"}
+            </button>
+          </>
+        ) : (
+          <p className="mt-1 text-sm text-muted">
+            No {level} mistakes to review right now. Questions you get wrong in any mode are saved here for later
+            practice.
+          </p>
+        )}
+        <WeakAreas questions={questions} log={log} onPractice={onPractice} />
+      </section>
 
       <section className="rounded-xl border border-border bg-surface p-6">
         <h2 className="text-lg font-semibold">Mock exam</h2>
@@ -369,6 +440,70 @@ function Setup({
   );
 }
 
+/** Accuracy per question type, from every answer saved for this level. */
+function WeakAreas({
+  questions,
+  log,
+  onPractice,
+}: {
+  questions: ExamQuestion[];
+  log: ExamLog;
+  onPractice: (type: QuestionType) => void;
+}) {
+  const rows = QUESTION_TYPES.map((t) => {
+    let attempts = 0;
+    let wrong = 0;
+    let review = 0;
+    for (const q of questions) {
+      const r = log[q.id];
+      if (q.type !== t.type || !r) continue;
+      attempts += r.attempts;
+      wrong += r.wrong;
+      if (needsReview(r)) review++;
+    }
+    return { ...t, attempts, review, accuracy: attempts ? (attempts - wrong) / attempts : 0 };
+  })
+    .filter((r) => r.attempts > 0)
+    .sort((a, b) => a.accuracy - b.accuracy);
+
+  if (rows.length === 0) return null;
+
+  return (
+    <div className="mt-5 border-t border-border pt-4">
+      <h3 className="text-sm font-semibold">Accuracy by question type (weakest first)</h3>
+      <ul className="mt-3 space-y-3">
+        {rows.map((r) => {
+          const pct = Math.round(r.accuracy * 100);
+          return (
+            <li key={r.type} className="flex items-center gap-3">
+              <div className="min-w-0 flex-1">
+                <div className="flex justify-between gap-2 text-sm">
+                  <span className="truncate">{r.label}</span>
+                  <span className="shrink-0 text-muted">
+                    {pct}%{r.review > 0 && ` · ${r.review} to review`}
+                  </span>
+                </div>
+                <div className="mt-1 h-2 rounded-full bg-foreground/10">
+                  <div
+                    className={`h-2 rounded-full ${pct < 60 ? "bg-red-600" : pct < 80 ? "bg-amber-500" : "bg-emerald-600"}`}
+                    style={{ width: `${pct}%` }}
+                  />
+                </div>
+              </div>
+              <button
+                onClick={() => onPractice(r.type)}
+                className="shrink-0 rounded-md border border-border px-3 py-1.5 text-xs font-semibold hover:border-accent"
+              >
+                Practice
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
 function Results({ session, onBack }: { session: Session; onBack: () => void }) {
   const result = score(session);
   const missed = session.items
@@ -379,7 +514,11 @@ function Results({ session, onBack }: { session: Session; onBack: () => void }) 
     <div className="space-y-6">
       <div className="rounded-xl border border-border bg-surface p-6 text-center">
         <div className="text-sm text-muted">
-          {session.mode === "mock" ? "Mock exam" : `Practice · ${TYPE_INFO[session.type!].label}`}
+          {session.mode === "mock"
+            ? "Mock exam"
+            : session.mode === "review"
+              ? "Mistake review"
+              : `Practice · ${TYPE_INFO[session.type!].label}`}
         </div>
         <div className="mt-1 text-4xl font-bold">
           {result.correct} / {result.total}
@@ -418,7 +557,13 @@ function Results({ session, onBack }: { session: Session; onBack: () => void }) 
         <section className="space-y-4">
           <h2 className="text-lg font-semibold">Review ({missed.length} missed)</h2>
           {missed.map(({ question, options, number }) => (
-            <div key={question.id} className="rounded-xl border border-border p-4">
+            <div key={question.id} className="space-y-2 rounded-xl border border-border p-4">
+              {(session.missedBefore[question.id] ?? 0) > 0 && (
+                <div className="inline-block rounded-md bg-red-600/15 px-2 py-0.5 text-xs font-semibold text-red-700 dark:text-red-400">
+                  Missed {session.missedBefore[question.id]} time{session.missedBefore[question.id] === 1 ? "" : "s"}{" "}
+                  before
+                </div>
+              )}
               <QuestionView
                 question={question}
                 number={number}
