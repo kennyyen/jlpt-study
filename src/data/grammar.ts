@@ -235,4 +235,247 @@ export const GRAMMAR: GrammarPoint[] = [
       { ja: "先生に褒められました。", en: "I was praised by the teacher." },
     ],
   },
+  {
+    id: "N3:you-ni-naru",
+    level: "N3",
+    pattern: "〜ようになる",
+    meaning: "To reach the point where ~; to come to ~",
+    formation: "Verb dictionary form / ない-form + ようになる",
+    examples: [
+      { ja: "日本語の新聞が読めるようになりました。", en: "I've become able to read Japanese newspapers." },
+    ],
+  },
+  {
+    id: "N3:you-ni-suru",
+    level: "N3",
+    pattern: "〜ようにする",
+    meaning: "To make an effort to ~; to make sure to ~",
+    formation: "Verb dictionary form / ない-form + ようにする",
+    examples: [
+      { ja: "毎日野菜を食べるようにしています。", en: "I make a point of eating vegetables every day." },
+    ],
+  },
+  {
+    id: "N3:wake-da",
+    level: "N3",
+    pattern: "〜わけだ",
+    meaning: "That's why ~; no wonder ~",
+    formation: "Plain form + わけだ (な-adj + なわけだ)",
+    examples: [
+      { ja: "十年も住んでいたのか。日本語が上手なわけだ。", en: "You lived there ten years? No wonder your Japanese is good." },
+    ],
+  },
+  {
+    id: "N3:wake-dewa-nai",
+    level: "N3",
+    pattern: "〜わけではない",
+    meaning: "It's not that ~; doesn't necessarily mean ~",
+    formation: "Plain form + わけではない",
+    examples: [
+      { ja: "肉が嫌いなわけではないが、あまり食べない。", en: "It's not that I dislike meat, but I don't eat it much." },
+    ],
+  },
+  {
+    id: "N3:ba-yokatta",
+    level: "N3",
+    pattern: "〜ばよかった",
+    meaning: "I should have ~ (regret)",
+    formation: "Verb ば-form + よかった",
+    examples: [
+      { ja: "もっと早く出発すればよかった。", en: "I should have left earlier." },
+    ],
+  },
+  {
+    id: "N3:tame-ni",
+    level: "N3",
+    pattern: "〜ために",
+    meaning: "In order to ~; because of ~",
+    formation: "Verb dictionary form / Noun + の + ために",
+    examples: [
+      { ja: "留学するためにお金を貯めています。", en: "I'm saving money in order to study abroad." },
+      { ja: "事故のために電車が遅れた。", en: "The train was delayed because of an accident." },
+    ],
+  },
+  {
+    id: "N3:rashii",
+    level: "N3",
+    pattern: "〜らしい",
+    meaning: "I heard ~; it seems ~; typical of ~",
+    formation: "Plain form + らしい (Noun + らしい for \"typical of\")",
+    examples: [
+      { ja: "明日は雪が降るらしい。", en: "I hear it's going to snow tomorrow." },
+      { ja: "今日は春らしい天気だ。", en: "Today's weather is very spring-like." },
+    ],
+  },
+  {
+    id: "N3:ni-yotte",
+    level: "N3",
+    pattern: "〜によって",
+    meaning: "By ~ (agent/means); depending on ~",
+    formation: "Noun + によって",
+    examples: [
+      { ja: "この寺は有名な建築家によって建てられた。", en: "This temple was built by a famous architect." },
+      { ja: "国によって習慣が違う。", en: "Customs differ depending on the country." },
+    ],
+  },
+  {
+    id: "N3:uchi-ni",
+    level: "N3",
+    pattern: "〜うちに",
+    meaning: "While ~ (before the situation changes)",
+    formation: "Verb dictionary / ない-form, い-adj, な-adj + な, Noun + の + うちに",
+    examples: [
+      { ja: "若いうちに色々な国へ行きたい。", en: "I want to visit many countries while I'm young." },
+    ],
+  },
+  {
+    id: "N3:koto-ni-suru",
+    level: "N3",
+    pattern: "〜ことにする",
+    meaning: "To decide to ~",
+    formation: "Verb dictionary form / ない-form + ことにする",
+    examples: [
+      { ja: "来月から禁煙することにしました。", en: "I've decided to quit smoking from next month." },
+    ],
+  },
+  {
+    id: "N3:sae",
+    level: "N3",
+    pattern: "〜さえ",
+    meaning: "Even ~",
+    formation: "Noun (+ particle) + さえ",
+    examples: [
+      { ja: "忙しくて、昼ご飯を食べる時間さえない。", en: "I'm so busy I don't even have time to eat lunch." },
+    ],
+  },
+  {
+    id: "N3:ppanashi",
+    level: "N3",
+    pattern: "〜っぱなし",
+    meaning: "Leaving something in a state (left undone)",
+    formation: "Verb stem + っぱなし",
+    examples: [
+      { ja: "電気をつけっぱなしで寝てしまった。", en: "I fell asleep with the lights left on." },
+    ],
+  },
+  {
+    id: "N2:ni-chigainai",
+    level: "N2",
+    pattern: "〜に違いない",
+    meaning: "There's no doubt that ~; must be ~",
+    formation: "Plain form + に違いない (な-adj/Noun without だ)",
+    examples: [
+      { ja: "電気が消えている。もう寝たに違いない。", en: "The lights are off. They must have gone to bed." },
+    ],
+  },
+  {
+    id: "N2:ni-kagitte",
+    level: "N2",
+    pattern: "〜に限って",
+    meaning: "Only when ~ (of all times); ~ in particular",
+    formation: "Noun + に限って",
+    examples: [
+      { ja: "傘を持っていない日に限って雨が降る。", en: "It always rains on the very days I don't have an umbrella." },
+    ],
+  },
+  {
+    id: "N2:ue-de",
+    level: "N2",
+    pattern: "〜上で",
+    meaning: "After ~ (doing first); in terms of ~",
+    formation: "Verb た-form / Noun + の + 上で",
+    examples: [
+      { ja: "よく考えた上で決めてください。", en: "Please decide after thinking it over carefully." },
+    ],
+  },
+  {
+    id: "N2:kagiri",
+    level: "N2",
+    pattern: "〜限り",
+    meaning: "As long as ~; as far as ~",
+    formation: "Verb dictionary / ない-form / Noun + である + 限り",
+    examples: [
+      { ja: "私が知っている限り、彼は信頼できる人だ。", en: "As far as I know, he is someone you can trust." },
+    ],
+  },
+  {
+    id: "N2:kuse-ni",
+    level: "N2",
+    pattern: "〜くせに",
+    meaning: "Even though ~ (critical)",
+    formation: "Plain form + くせに (な-adj + な, Noun + の)",
+    examples: [
+      { ja: "知っているくせに教えてくれない。", en: "Even though they know, they won't tell me." },
+    ],
+  },
+  {
+    id: "N2:to-wa-kagiranai",
+    level: "N2",
+    pattern: "〜とは限らない",
+    meaning: "Not necessarily ~",
+    formation: "Plain form + とは限らない",
+    examples: [
+      { ja: "高い物がいい物だとは限らない。", en: "Expensive things aren't necessarily good things." },
+    ],
+  },
+  {
+    id: "N2:zaru-wo-enai",
+    level: "N2",
+    pattern: "〜ざるを得ない",
+    meaning: "Cannot help but ~; have no choice but to ~",
+    formation: "Verb ない-stem + ざるを得ない (する → せざるを得ない)",
+    examples: [
+      { ja: "雨が強いので、試合は中止せざるを得ない。", en: "The rain is so heavy we have no choice but to cancel the match." },
+    ],
+  },
+  {
+    id: "N2:ni-kanshite",
+    level: "N2",
+    pattern: "〜に関して",
+    meaning: "Concerning ~; regarding ~",
+    formation: "Noun + に関して (+ の before a noun)",
+    examples: [
+      { ja: "この件に関して質問があります。", en: "I have a question regarding this matter." },
+    ],
+  },
+  {
+    id: "N2:ni-tsurete",
+    level: "N2",
+    pattern: "〜につれて",
+    meaning: "As ~ (one change brings another)",
+    formation: "Verb dictionary form / Noun + につれて",
+    examples: [
+      { ja: "年を取るにつれて、体力が落ちてきた。", en: "As I've gotten older, my stamina has declined." },
+    ],
+  },
+  {
+    id: "N2:mono-no",
+    level: "N2",
+    pattern: "〜ものの",
+    meaning: "Although ~",
+    formation: "Plain form + ものの (な-adj + な / である)",
+    examples: [
+      { ja: "免許は取ったものの、まだ運転に自信がない。", en: "Although I got my license, I'm still not confident driving." },
+    ],
+  },
+  {
+    id: "N2:ippou-da",
+    level: "N2",
+    pattern: "〜一方だ",
+    meaning: "Keeps ~ing; more and more (one direction)",
+    formation: "Verb dictionary form + 一方だ",
+    examples: [
+      { ja: "この町の人口は減る一方だ。", en: "This town's population just keeps decreasing." },
+    ],
+  },
+  {
+    id: "N2:wake-niwa-ikanai",
+    level: "N2",
+    pattern: "〜わけにはいかない",
+    meaning: "Can't (for social/moral reasons)",
+    formation: "Verb dictionary form + わけにはいかない",
+    examples: [
+      { ja: "大事な会議があるので、休むわけにはいかない。", en: "I have an important meeting, so I can't take the day off." },
+    ],
+  },
 ];
