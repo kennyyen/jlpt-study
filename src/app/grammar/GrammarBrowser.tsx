@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { LevelPicker, useLevel } from "@/components/LevelPicker";
+import { SpeakButton } from "@/components/SpeakButton";
 import { GRAMMAR } from "@/data/grammar";
 import type { Level } from "@/lib/types";
 
@@ -47,9 +48,12 @@ export function GrammarBrowser() {
                 </p>
                 <ul className="space-y-2">
                   {g.examples.map((ex) => (
-                    <li key={ex.ja}>
-                      <div lang="ja">{ex.ja}</div>
-                      <div className="text-sm text-muted">{ex.en}</div>
+                    <li key={ex.ja} className="flex gap-2">
+                      <SpeakButton text={ex.ja} label="Listen to the example" className="-ml-1" />
+                      <div>
+                        <div lang="ja">{ex.ja}</div>
+                        <div className="text-sm text-muted">{ex.en}</div>
+                      </div>
                     </li>
                   ))}
                 </ul>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { LevelPicker, useLevel } from "@/components/LevelPicker";
+import { SpeakButton } from "@/components/SpeakButton";
 import { VOCAB } from "@/data/vocab";
 import { formatInterval, isDue, review, type CardState, type Grade } from "@/lib/srs";
 import { useStoredState } from "@/lib/storage";
@@ -108,11 +109,15 @@ export function Flashcards() {
         </div>
         {revealed ? (
           <>
-            {card.kana !== card.word && (
-              <div className="text-xl text-muted" lang="ja">
-                {card.kana}
-              </div>
-            )}
+            <div className="flex items-center gap-1">
+              {card.kana !== card.word && (
+                <span className="text-xl text-muted" lang="ja">
+                  {card.kana}
+                </span>
+              )}
+              {/* Read the kana so the voice can't pick the wrong reading for the kanji. */}
+              <SpeakButton text={card.kana} label="Listen to the word" />
+            </div>
             <div className="text-lg">{card.meaning}</div>
           </>
         ) : (

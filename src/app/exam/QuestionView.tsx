@@ -1,5 +1,7 @@
 "use client";
 
+import { SpeakButton } from "@/components/SpeakButton";
+import { spokenText } from "@/data/exam";
 import type { ExamQuestion } from "@/lib/types";
 
 /** Renders `{{text}}` as underlined, like the target word on the test. */
@@ -44,7 +46,8 @@ export function QuestionView({
   return (
     <div className="space-y-4" lang="ja">
       {question.passage && (
-        <div className="whitespace-pre-line rounded-xl border border-border bg-surface p-5 leading-relaxed">
+        <div className="relative whitespace-pre-line rounded-xl border border-border bg-surface p-5 pr-12 leading-relaxed">
+          <SpeakButton text={question.passage} label="Listen to the passage" className="absolute right-2 top-2" />
           {question.passage}
         </div>
       )}
@@ -76,10 +79,16 @@ export function QuestionView({
         })}
       </div>
       {reveal && (
-        <p className="rounded-lg border border-border bg-surface p-4 text-sm" lang="en">
-          <span className="font-semibold">{picked === answer ? "Correct. " : `Answer: ${answer}. `}</span>
-          <span lang="ja">{question.explanation}</span>
-        </p>
+        <div className="flex gap-2 rounded-lg border border-border bg-surface p-4 text-sm">
+          {/* Only after answering: hearing a kanji-reading question would give the answer away. */}
+          {question.type !== "reading" && (
+            <SpeakButton text={spokenText(question)} label="Listen to the sentence" className="-ml-1 -mt-1" />
+          )}
+          <p lang="en">
+            <span className="font-semibold">{picked === answer ? "Correct. " : `Answer: ${answer}. `}</span>
+            <span lang="ja">{question.explanation}</span>
+          </p>
+        </div>
       )}
     </div>
   );

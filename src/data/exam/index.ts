@@ -4,4 +4,4 @@ import { N3_EXAM } from "./n3";
 
 export const EXAM_QUESTIONS: ExamQuestion[] = [...N3_EXAM, ...N2_EXAM];
 
-export { QUESTION_TYPES, SECTIONS, TYPE_INFO, type SectionId } from "./sections";
+export { QUESTION_TYPES, SECTIONS, spokenText, TYPE_INFO, type SectionId } from "./sections";

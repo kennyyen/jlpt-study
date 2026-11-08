@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { LevelPicker, useLevel } from "@/components/LevelPicker";
+import { SpeakButton } from "@/components/SpeakButton";
 import { VOCAB } from "@/data/vocab";
 import type { Level, Word } from "@/lib/types";
 
@@ -141,7 +142,8 @@ export function Quiz() {
       </div>
       {picked !== null && (
         <div className="flex items-center justify-between rounded-lg border border-border bg-surface p-4">
-          <div lang="ja">
+          <div lang="ja" className="flex flex-wrap items-center">
+            <SpeakButton text={q.word.kana} label="Listen to the word" className="-ml-1 mr-1" />
             <span className="font-semibold">{q.word.word}</span>
             {q.word.kana !== q.word.word && <span className="text-muted">（{q.word.kana}）</span>}
             <span className="ml-2 text-sm text-muted">{q.word.meaning}</span>
