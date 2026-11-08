@@ -8,6 +8,7 @@ A web app to practice Japanese for JLPT exams — flashcards, grammar reference,
 - **Quiz** — 10-question multiple-choice vocabulary rounds
 - **Exam Practice** — original questions in the JLPT's formats (kanji reading, word usage, ★ sentence building, reading passages…) for N3 and N2, by question type or as a timed mock exam with a per-section score
 - **Mistake review** — every exam answer is saved in the browser; missed questions come back in a review list (cleared after answering correctly on 2 different days), with accuracy by question type
+- **Audio** — 🔊 buttons read words, grammar examples, exam sentences and reading passages aloud with the device's built-in Japanese voice (Web Speech API), with a "Slow audio" option. Voice quality depends on the device
 
 Content currently covers N5 through N2; N1 is planned. Progress is stored in the browser's `localStorage`, so there's no account or backend.
 

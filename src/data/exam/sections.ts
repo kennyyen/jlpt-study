@@ -83,6 +83,13 @@ export const TYPE_INFO = Object.fromEntries(QUESTION_TYPES.map((t) => [t.type, t
 
 type Options = ExamQuestion["options"];
 
+/** The question as a complete Japanese sentence to read aloud once the answer is shown. */
+export function spokenText(q: ExamQuestion): string {
+  if (q.sentence) return q.sentence;
+  if (q.type === "usage") return q.options[0];
+  return q.prompt.replace(/\{\{(.+?)\}\}/g, "$1").replace("（　）", q.options[0]);
+}
+
 /**
  * Helpers that keep the question files compact. Every question has a fixed id
  * (e.g. "N3-012") that saved progress refers to, so never reuse or renumber
@@ -113,13 +120,11 @@ export function questions(level: Level) {
     ) {
       const slots = pieces.map((_, i) => (i === star ? "＿★＿" : "＿＿＿")).join(" ");
       const others = pieces.filter((_, i) => i !== star);
-      return q(
-        id,
-        "sentence-order",
-        `${before} ${slots} ${after}`,
-        [pieces[star], others[0], others[1], others[2]],
-        `${before}${pieces.join("")}${after}　${explanation}`,
-      );
+      const sentence = `${before}${pieces.join("")}${after}`;
+      return {
+        ...q(id, "sentence-order", `${before} ${slots} ${after}`, [pieces[star], others[0], others[1], others[2]], `${sentence}　${explanation}`),
+        sentence,
+      };
     },
     /** A reading passage with one or more questions about it. */
     passage(text: string, items: { id: string; prompt: string; options: Options; explanation: string }[]) {

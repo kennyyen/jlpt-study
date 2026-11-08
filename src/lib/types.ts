@@ -41,4 +41,6 @@ export interface ExamQuestion {
   /** The first option is the correct answer; options are shuffled when shown. */
   options: [string, string, string, string];
   explanation: string;
+  /** Sentence-building questions: the completed sentence. */
+  sentence?: string;
 }

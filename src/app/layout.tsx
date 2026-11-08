@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Nav } from "@/components/Nav";
+import { SpeechRateToggle } from "@/components/SpeakButton";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -13,8 +14,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col">
         <Nav />
         <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-8">{children}</main>
-        <footer className="py-6 text-center text-xs text-muted">
-          Progress is saved in this browser only.
+        <footer className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 py-6 text-xs text-muted">
+          <span>Progress is saved in this browser only.</span>
+          <SpeechRateToggle />
         </footer>
       </body>
     </html>
